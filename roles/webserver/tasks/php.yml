@@ -1,0 +1,29 @@
+---
+- name: install PHP
+  dnf:
+     enablerepo: "{{ httpd.repo }}"
+     name: "{{ php.extensions }}"
+     state: present  
+  notify: restart apache
+  tags:
+    - php
+
+- name: add php info file
+  template:
+     src: phpinfo.php.j2
+     dest: "{{ httpd.document_root_base_dir}}/{{ httpd.main.document_root}}/x.php"
+     owner: "{{ httpd.user }}"
+     group: "{{ httpd.group }}"
+     mode: '0644'
+  tags:
+    - php
+
+- name: configure apcu
+  template:
+     src: apcu.ini.j2
+     dest: "/etc/php-zts.d/40-apcu.ini"
+     owner: "root"
+     group: "root"
+     mode: '0644'
+  tags:
+    - php

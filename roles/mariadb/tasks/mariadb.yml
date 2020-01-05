@@ -1,0 +1,22 @@
+---
+- name: Install MariaDB
+  dnf:
+    name: ['mariadb', 'mariadb-server']
+    state: present
+  tags:
+    - mariadb
+
+- name: Install MySQL python module
+  pip:
+    name: PyMySQL
+    state: present
+  tags:
+    - mariadb
+
+- name: Start and enable mariaDB
+  service:
+    name: mariadb
+    state: started
+    enabled: true
+  tags:
+    - mariadb

@@ -1,0 +1,14 @@
+# roles/httpd/defaults/main.yml
+---
+postgresql:
+  repo: 'https://download.postgresql.org/pub/repos/yum/reporpms/F-30-x86_64/pgdg-fedora-repo-latest.noarch.rpm'
+  user: vagrant
+  password: vagrant
+  db: default_db
+  schema: default_schema
+  data_path: '/var/lib/pgsql/11/data'
+  components:
+    - postgresql11
+    - postgresql11-server
+  initialization_command: '/usr/pgsql-11/bin/postgresql-11-setup initdb'
+  service_name: 'postgresql-11.service'

@@ -1,0 +1,10 @@
+---
+- name: Configure Selinux
+  template:
+    src: selinux_config.j2
+    dest: /etc/selinux/config
+    owner: root
+    group: root
+    mode: 0660
+  tags:
+    - selinux

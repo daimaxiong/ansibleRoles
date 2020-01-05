@@ -1,0 +1,160 @@
+#
+# This is the main Apache HTTP server configuration file.  It contains the
+# configuration directives that give the server its instructions.
+# See <URL:http://httpd.apache.org/docs/2.4/> for detailed information.
+# In particular, see
+# <URL:http://httpd.apache.org/docs/2.4/mod/directives.html>
+# for a discussion of each configuration directive.
+
+ServerRoot "{{ httpd.server_root }}
+Listen "{{ httpd.listen }}"
+
+Include conf.modules.d/*.conf
+
+User {{ httpd.user }}
+Group {{ httpd.group }}
+
+# 'Main' server configuration
+#
+# The directives in this section set up the values used by the 'main'
+# server, which responds to any requests that aren't handled by a
+# <VirtualHost> definition.  These values also provide defaults for
+# any <VirtualHost> containers you may define later in the file.
+#
+# All of these directives may appear inside <VirtualHost> containers,
+# in which case these default settings will be overridden for the
+# virtual host being defined.
+#
+
+ServerAdmin "{{ httpd.main.server_admin }}"
+
+#
+# ServerName gives the name and port that the server uses to identify itself.
+# If your host doesn't have a registered DNS name, enter its IP address here.
+#
+{% if httpd_ServerName is defined %}
+ServerName "{{ httpd.main.server_name }}"
+{% endif %}
+
+#
+# Deny access to the entirety of your server's filesystem. You must
+# explicitly permit access to web content directories in other
+# <Directory> blocks below.
+#
+<Directory />
+    AllowOverride none
+    Require all denied
+</Directory>
+
+DocumentRoot "{{ httpd.document_root_base_dir }}/{{ httpd.main.document_root }}"
+
+# Relax access to content within document_root_base_dir.
+<Directory "{{ httpd.document_root_base_dir }}">
+    AllowOverride None
+    Require all granted
+</Directory>
+
+# Further relax access to the default document root:
+<Directory "{{ httpd.document_root_base_dir }}/{{ httpd.main.document_root }}">
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+</Directory>
+
+#
+# DirectoryIndex: sets the file that Apache will serve if a directory
+# is requested.
+#
+<IfModule dir_module>
+    DirectoryIndex index.html, index.php
+</IfModule>
+
+# Prevent .htaccess and .htpasswd files from being viewed by Web clients.
+<Files ".ht*">
+    Require all denied
+</Files>
+
+ErrorLog "{{ httpd.main.error_log}}"
+LogLevel "{{ httpd.main.log_level}}"
+
+<IfModule log_config_module>
+
+    LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+    LogFormat "%h %l %u %t \"%r\" %>s %b" common
+
+    <IfModule logio_module>
+      # You need to enable mod_logio.c to use %I and %O
+      LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+    </IfModule>
+
+    CustomLog "{{ httpd.main.access_log }}" combined
+</IfModule>
+
+<IfModule alias_module>
+    #
+    # Redirect: Allows you to tell clients about documents that used to
+    # exist in your server's namespace, but do not anymore. The client
+    # will make a new request for the document at its new location.
+    # Example:
+    # Redirect permanent /foo http://www.example.com/bar
+
+    #
+    # Alias: Maps web paths into filesystem paths and is used to
+    # access content that does not live under the DocumentRoot.
+    # Example:
+    # Alias /webpath /full/filesystem/path
+    #
+    # If you include a trailing / on /webpath then the server will
+    # require it to be present in the URL.  You will also likely
+    # need to provide a <Directory> section to allow access to
+    # the filesystem path.
+
+    #
+    # ScriptAlias: This controls which directories contain server scripts.
+    # ScriptAliases are essentially the same as Aliases, except that
+    # documents in the target directory are treated as applications and
+    # run by the server when requested rather than as documents sent to the
+    # client.  The same rules about trailing "/" apply to ScriptAlias
+    # directives as to Alias.
+    #
+    ScriptAlias /cgi-bin/ "/var/www/cgi-bin/"
+
+</IfModule>
+
+#
+# "/var/www/cgi-bin" should be changed to whatever your ScriptAliased
+# CGI directory exists, if you have that configured.
+#
+<Directory "/var/www/cgi-bin">
+    AllowOverride None
+    Options None
+    Require all granted
+</Directory>
+
+
+AddDefaultCharset UTF-8
+
+<IfModule mime_module>
+
+    TypesConfig /etc/mime.types
+
+    AddType application/x-compress .Z
+    AddType application/x-gzip .gz .tgz
+    AddType application/x-httpd-php .php
+    AddType application/x-httpd-php .php3
+
+    AddType text/html .shtml
+    AddOutputFilter INCLUDES .shtml
+</IfModule>
+
+AddDefaultCharset UTF-8
+
+<IfModule mime_magic_module>
+    MIMEMagicFile conf/magic
+</IfModule>
+
+#EnableMMAP off
+EnableSendfile on
+
+# Load config files in the "/etc/httpd/conf.d" directory, if any.
+IncludeOptional conf.d/*.conf

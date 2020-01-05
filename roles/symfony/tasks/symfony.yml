@@ -1,0 +1,81 @@
+---
+- name: Check if symfony executable is already installed
+  find:
+    paths: "/usr/bin/"
+    patterns: "symfony"
+  register: found_symfony_exec
+   
+- name: Download Symfony Installer
+  get_url:
+    url: https://get.symfony.com/cli/installer
+    dest: /tmp
+    mode: 0770
+  when: found_symfony_exec.matched == 0  
+  tags:
+    - symfony
+    
+- name: Run Symfony Installer
+  command: sh /tmp/installer
+  when: found_symfony_exec.matched == 0 
+
+- name: make symfony globally available as symfony
+  raw: mv /root/.symfony/bin/symfony /usr/bin/symfony
+  when: found_symfony_exec.matched == 0 
+  tags:
+    - symfony
+    
+- name: Check if symfony is already installed
+  find:
+    paths: "{{ httpd.document_root_base_dir }}/{{ httpd.vhost.document_root }}"
+    patterns: "*.*"
+    recurse: yes
+  register: found_files
+  tags:
+    - symfony
+    
+- name: "Install unsafe: files found in project path"    
+  debug:
+    var: found_files.matched
+  when: found_files.matched > 0
+    
+- name: Abort install
+  meta: end_play
+  when: found_files.matched > 0
+    
+- name: Clear install path
+  file:
+    state: absent
+    path: "{{ httpd.document_root_base_dir }}/{{ project.name }}"
+  when: found_files.matched == 0
+  
+- name: Recreate install path
+  file:
+    state: directory
+    path: "{{ httpd.document_root_base_dir }}/{{ project.name }}"
+  when: found_files.matched == 0
+    
+- name: Install Symfony with Symfony Installer if project folder does not already exists
+  command: "symfony new {{ project.installer_params }} {{ project.name }} --dir={{ httpd.document_root_base_dir }}/{{ project.name }} --version={{project.symfony_version}}"
+  tags:
+    - symfony
+
+- name: Set permissions
+  file:
+    path: "{{ httpd.document_root_base_dir }}/{{ project.name }}/"
+    mode: u=rwX,g=rwX,o=rX
+    owner: "{{ httpd.user }}"
+    group: "{{ httpd.group }}"
+    recurse: yes
+  notify: restart apache
+  tags:
+    - symfony
+
+#- name: Make config.php reachable from vagrant host
+#  template:
+#    src: config.php.j2
+#    dest: "{{ httpd.document_root_base_dir }}/{{ httpd.vhost.document_root }}/config.php"
+#    owner: "{{ httpd.user }}"
+#    group: "{{ httpd.group }}"
+#    mode: 0664
+#  tags:
+#    - symfony

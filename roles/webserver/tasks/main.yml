@@ -1,0 +1,7 @@
+---
+- import_tasks: apache.yml
+- import_tasks: php.yml
+- import_tasks: php_fpm.yml
+- import_tasks: setup_vhost.yml
+- import_tasks: composer.yml
+- import_tasks: selinux.yml

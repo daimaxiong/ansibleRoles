@@ -1,0 +1,4 @@
+# roles/httpd/defaults/main.yml
+---
+mysql:
+  root_password: overwrite_this

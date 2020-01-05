@@ -1,0 +1,12 @@
+---
+ - name: Provision Vagrant
+   hosts: all
+   vars_files: 
+     - ./config.yml
+   remote_user: vagrant   
+   become: true
+   roles:
+#     - webserver
+#     - mariadb
+#     - symfony
+#     - postgres

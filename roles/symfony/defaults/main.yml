@@ -1,0 +1,21 @@
+# roles/httpd/defaults/main.yml
+---
+project:
+  name: nakac
+  symfony_version: 5.0
+
+httpd:
+   server_root: '/etc/httpd'
+   document_root_base_dir: /var/www
+   user: apache
+   group: apache
+   vhost:
+       document_root: 'nakac/web'
+       listen: 80
+       server_name: nakac.de
+       server_alias: www.nakac.de
+       server_admin: root@localhost
+       server_tokens: Prod
+       error_log: logs/error_log
+       access_log: logs/access_log
+       log_level: warn

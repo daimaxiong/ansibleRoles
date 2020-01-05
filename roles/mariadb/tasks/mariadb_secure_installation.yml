@@ -1,0 +1,52 @@
+---
+- name: Set root Password
+  mysql_user:
+    login_user: root
+    login_password:
+    name: root
+    host: localhost
+    password: "{{ mysql.root_password }}"
+    state: present
+  tags:
+    - mariadb
+    - mariadb_secure
+
+- name: Add .my.cnf
+  template:
+    src: my.cnf.j2
+    dest: ~/.my.cnf
+    owner: root
+    group: root
+    mode: 0600
+  tags:
+    - mariadb
+    - mariadb_secure
+
+- name: Set root Password
+  mysql_user:
+    config_file: ~/.my.cnf
+    name: root
+    host: "{{ item }}"
+    password: "{{ mysql.root_password }}"
+    state: present
+  with_items:
+    - 127.0.0.1
+    - ::1
+  tags:
+    - mariadb
+    - mariadb_secure
+
+- name: ensure anonymous users are not in the database
+  mysql_user: name='' host={{ item }} state=absent
+  with_items:
+    - localhost
+    - "{{ inventory_hostname }}"
+  tags:
+    - mariadb
+    - mariadb_secure
+
+- name: remove the test database
+  mysql_db: name=test state=absent
+  tags:
+    - mariadb
+    - mariadb_secure

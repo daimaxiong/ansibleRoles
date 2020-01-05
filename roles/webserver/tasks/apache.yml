@@ -1,0 +1,78 @@
+---
+- name: create custom group
+  group:
+    name: apache
+    state: present
+  tags:
+    - apache
+
+- name: Create custom user
+  user:
+    name: apache
+    uid: 1088
+    group: apache
+    state: present
+  tags:
+    - apache
+
+- name: Create main document root directory
+  file:
+    path: "{{ httpd.document_root_base_dir }}/{{ httpd.main.document_root }}"
+    state: directory
+    mode: 0775
+    recurse: yes
+  tags:
+    - apache
+
+- name: Install Apache Server
+  dnf:
+    enablerepo: "{{ httpd.repo }}"
+    name: httpd
+    state: present
+  tags:
+    - apache
+
+- name: Install Apache Mods
+  dnf:
+    enablerepo: "{{ httpd.repo }}"
+    name: "{{ httpd.mods }}"
+    state: present
+  tags:
+    - apache
+    
+- name: Apache main configuration file
+  template:
+    src: httpd.conf.j2
+    dest: "{{ httpd.server_root }}/conf/httpd.conf"
+    owner: root
+    group: root
+    setype: httpd_config_t
+    mode: '0644'
+  notify: restart apache
+  tags:
+    - apache
+
+- name: Set permissions
+  file:
+    path: "{{ httpd.document_root_base_dir }}"
+    mode: u=rwX,g=rwX,o=rX
+    owner: "{{ httpd.user }}"
+    group: "{{ httpd.group }}"
+    recurse: yes
+  notify: restart apache
+  tags:
+    - apache
+    - apache_permissions
+
+- name: Ensure Apache is running and enabled
+  service:
+    name: httpd
+    state: started
+    enabled: true
+  tags:
+    - apache
+
+- name: Add user vagrant to group apache to ease access for IDE uploads etc
+  command: usermod -a -G apache vagrant
+  tags:
+    - apache

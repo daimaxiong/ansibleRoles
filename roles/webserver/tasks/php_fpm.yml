@@ -1,0 +1,17 @@
+---
+- name: install php-fpm
+  dnf:
+     name: php-fpm
+     enablerepo: "{{ httpd.repo }}"
+     state: present
+  tags:
+    - php_fpm
+
+- name: start and enable fpm
+  service:
+    name: php-fpm
+    state: started
+    enabled: true
+  notify: restart apache
+  tags:
+    - php_fpm

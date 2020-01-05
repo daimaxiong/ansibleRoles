@@ -1,0 +1,17 @@
+---
+- name: Install composer install-script dependency
+  dnf:
+    name: wget
+    state: present
+  tags:
+    - composer
+
+- name: Install composer
+  script: "{{ role_path }}/files/install_composer.sh"
+  tags:
+    - composer
+
+- name: make composer globally available as composer
+  raw: cp /home/vagrant/composer.phar /usr/bin/composer
+  tags:
+    - composer

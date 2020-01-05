@@ -1,0 +1,14 @@
+# PostgreSQL Client Authentication Configuration File
+# ===================================================
+#             Synopsis/Documentation:
+# pg_hba.conf.example
+# https://www.postgresql.org/docs/10/auth-pg-hba-conf.html
+# ===================================================
+
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+local   all             vagrant                                 password
+local   all             vagrant                                 ident
+host    all             vagrant         127.0.0.1/32            password
+host    all             vagrant         127.0.0.1/32            ident
+local   all             postgres                                ident

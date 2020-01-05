@@ -1,0 +1,4 @@
+---
+- import_tasks: update_os.yml
+- import_tasks: selinux_config.yml
+- import_tasks: docker.yml

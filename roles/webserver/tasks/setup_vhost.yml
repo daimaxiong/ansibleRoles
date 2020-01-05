@@ -1,0 +1,35 @@
+---
+- name: Create vhost document root directory
+  file:
+    path: "{{ httpd.document_root_base_dir }}/{{ httpd.vhost.document_root}}"
+    state: directory
+    mode: 0775
+    recurse: yes
+  tags:
+    - apache
+    - vhost
+
+- name: Vhost configuration file
+  template:
+    src: vhosts.conf.j2
+    dest: "{{ httpd.server_root }}/conf.d/vhost.conf"
+    owner: root
+    group: root
+    setype: httpd_config_t
+    mode: '0644'
+  notify: restart apache
+  tags:
+    - apache
+    - vhost
+
+- name: Set permissions
+  file:
+    path: "{{ httpd.document_root_base_dir }}/html"
+    mode: u=rwX,g=rwX,o=rX
+    owner: "{{ httpd.user }}"
+    group: "{{ httpd.group }}"
+    recurse: yes
+  notify: restart apache
+  tags:
+    - apache
+    - vhost
