@@ -9,7 +9,6 @@ vagrant:
     ip: '192.168.?.?'
     ansible_python_interpreter: /usr/bin/python3    
     name: '????'
-    private_key_file: '/home/bm/projects/hrg_sym/box/.vagrant/machines/default/virtualbox/private_key'
 mysql:
   root_password: '????'
 project:
