@@ -1,9 +1,9 @@
 ---
- - name: Provision Vagrant
-   hosts: all
+ - name: Provision Vagrant   
    vars_files: 
      - ./config.yml
-   remote_user: vagrant   
+   hosts: "{{ rem_hosts }}"
+   remote_user: "{{ rem_user }}"
    become: true
    roles:
 #     - webserver

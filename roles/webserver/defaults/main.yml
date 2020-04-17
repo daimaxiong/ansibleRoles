@@ -8,27 +8,29 @@ httpd:
    listen: 80
    user: apache
    group: apache
-   main:
-       document_root: 'html'
-       server_admin: root@localhost
-       server_name: localhost
-       server_tokens: Prod
-       error_log: logs/error_log
-       access_log: logs/access_log
-       log_level: warn
-   vhost:
-       document_root: 'html'
-       listen: 80
-       server_name: dummy.hk
-       server_alias: dummy.hk
-       server_admin: root@localhost
-       server_tokens: Prod
-       error_log: logs/error_log
-       access_log: logs/access_log
-       log_level: warn
+   document_root: 'html'
+   server_admin: root@localhost
+   server_name: localhost
+   server_tokens: Prod
+   error_log: logs/error_log
+   access_log: logs/access_log
+   log_level: warn
+vhost:
+    document_root: 'html'
+    listen: 80
+    server_name: localtest
+    server_alias: localtest
+    server_admin: root@localhost
+    server_tokens: Prod
+    error_log: logs/error_log
+    access_log: logs/access_log
+    log_level: warn
 
 php:
-  extensions:
+  repo:
+    name: ~
+    location: ~
+php_extensions:
     - php
     - php-common
     - php-pdo

@@ -1,43 +1,63 @@
 ---
+rem_user: vagrant
+rem_hosts: ???
 vagrant:
   host:
     ip: '127.0.0.1'
   box:
     memory: '4096'
     cpus: 2
-    image: 'fed30-local'
-    ip: '192.168.?.?'
+    image: '???'
+    ip: '192.168.#.#'
     ansible_python_interpreter: /usr/bin/python3    
-    name: '????'
+    name: '???'
 mysql:
-  root_password: '????'
-project:
-  name: '????'
-  symfony_version: '4.4'
+  root_password: '???'
+symfony:
+  project_name: '???'
+  version: '5.0'
   installer_params: '--full'
 httpd:
-   repo: ~
-   mods: [mod_ssl]
-   server_root: '/etc/httpd'
-   document_root_base_dir: '/var/www'
-   listen: 80
-   user: 'apache'
-   group: 'apache'
-   main:
-       document_root: 'html'
-       server_admin: 'admin@localhost'
-       server_name: 'localhost'
-       server_tokens: 'Prod'
-       error_log: 'logs/error_log'
-       access_log: 'logs/access_log'
-       log_level: 'warn'
-   vhost:
-       document_root: '????'
-       listen: 80
-       server_name: '????'
-       server_alias: '????'
-       server_admin: 'admin@localhost'
-       server_tokens: 'Prod'
-       error_log: 'logs/error_log'
-       access_log: 'logs/access_log'
-       log_level: 'warn'
+  repo: ~
+  mods: [mod_ssl]
+  server_root: '/etc/httpd'
+  document_root_base_dir: '/var/www'
+  listen: 80
+  user: 'apache'
+  group: 'apache'   
+  document_root: 'html'
+  server_admin: 'admin@localhost'
+  server_name: 'localhost'
+  server_tokens: 'Prod'
+  error_log: 'logs/error_log'
+  access_log: 'logs/access_log'
+  log_level: 'warn'
+  
+deploy:
+  rem_group: 'vagrant'
+  ssh:
+    secret:
+      source: './ssh/???'
+      dest: '.ssh/???'
+    public:
+      source: './ssh/???.pub'
+      dest: '.ssh/???.pub'  
+    config: 
+      source: './ssh/config'
+      dest: '.ssh/config'
+    known_hosts: 
+      source: './ssh/known_hosts'
+      dest: '.ssh/known_hosts'
+  git_repo:
+    name: 'git@github.com:repo'
+    version: '???'
+    depth: '1'
+  database_dump:
+    path: './'
+    tar_file_name: '???.tar.gz'
+    sql_file_name: '???.sql'
+  webpack_command: 'yarn encore production'
+  environment:
+    - {key: 'DATABASE_URL', value: '"mysql://user:password@127.0.0.1:3306/DB"'}
+    - {key: 'APP_ENV', value: 'prod'}
+    - {key: 'APP_DEBUG', value: '0'}

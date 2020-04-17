@@ -2,4 +2,5 @@
 - import_tasks: composer.yml
 - import_tasks: symfony.yml
 - import_tasks: setup_vhost.yml
+- import_tasks: yarn.yml
 - import_tasks: selinux.yml

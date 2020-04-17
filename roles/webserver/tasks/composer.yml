@@ -21,6 +21,6 @@
     - composer
 
 - name: make composer globally available as composer
-  raw: cp /home/vagrant/composer.phar /usr/bin/composer
+  raw: cp "/home/{{rem_user}}/composer.phar" /usr/bin/composer
   tags:
     - composer
