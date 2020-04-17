@@ -1,8 +1,14 @@
 ---
-- name: install PHP
+- name: install repo
   dnf:
-     enablerepo: "{{ httpd.repo }}"
-     name: "{{ php.extensions }}"
+    name: "{{ php.repo.location }}"
+    state: present
+  when: php.repo.location is defined
+ 
+- name: install PHP repo
+  dnf:
+     enablerepo: "{{ php.repo.name }}"
+     name: "{{ php_extensions }}"
      state: present  
   notify: restart apache
   tags:
@@ -11,7 +17,7 @@
 - name: add php info file
   template:
      src: phpinfo.php.j2
-     dest: "{{ httpd.document_root_base_dir}}/{{ httpd.main.document_root}}/x.php"
+     dest: "{{ httpd.document_root_base_dir}}/{{ httpd.document_root}}/x.php"
      owner: "{{ httpd.user }}"
      group: "{{ httpd.group }}"
      mode: '0644'
@@ -27,3 +33,5 @@
      mode: '0644'
   tags:
     - php
+
+  

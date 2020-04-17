@@ -1,7 +1,7 @@
 ---
 - name: Create vhost document root directory
   file:
-    path: "{{ httpd.document_root_base_dir }}/{{ httpd.vhost.document_root}}"
+    path: "{{ httpd.document_root_base_dir }}/{{ vhost.document_root}}"
     state: directory
     mode: 0775
     recurse: yes

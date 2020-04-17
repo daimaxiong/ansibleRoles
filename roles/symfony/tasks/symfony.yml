@@ -26,7 +26,7 @@
     
 - name: Check if symfony is already installed
   find:
-    paths: "{{ httpd.document_root_base_dir }}/{{ httpd.vhost.document_root }}"
+    paths: "{{ httpd.document_root_base_dir }}/{{ symfony.project_name }}"
     patterns: "*.*"
     recurse: yes
   register: found_files
@@ -45,23 +45,23 @@
 - name: Clear install path
   file:
     state: absent
-    path: "{{ httpd.document_root_base_dir }}/{{ project.name }}"
+    path: "{{ httpd.document_root_base_dir }}/{{ symfony.project_name }}"
   when: found_files.matched == 0
   
 - name: Recreate install path
   file:
     state: directory
-    path: "{{ httpd.document_root_base_dir }}/{{ project.name }}"
+    path: "{{ httpd.document_root_base_dir }}/{{ symfony.project_name }}"
   when: found_files.matched == 0
     
 - name: Install Symfony with Symfony Installer if project folder does not already exists
-  command: "symfony new {{ project.installer_params }} {{ project.name }} --dir={{ httpd.document_root_base_dir }}/{{ project.name }} --version={{project.symfony_version}}"
+  command: "symfony new {{ symfony.installer_params }} {{ symfony.project_name }} --dir={{ httpd.document_root_base_dir }}/{{ symfony.project_name }} --version={{ symfony.version}}"
   tags:
     - symfony
 
 - name: Set permissions
   file:
-    path: "{{ httpd.document_root_base_dir }}/{{ project.name }}/"
+    path: "{{ httpd.document_root_base_dir }}/{{ symfony.project_name }}/"
     mode: u=rwX,g=rwX,o=rX
     owner: "{{ httpd.user }}"
     group: "{{ httpd.group }}"

@@ -26,14 +26,14 @@ Group {{ httpd.group }}
 # virtual host being defined.
 #
 
-ServerAdmin "{{ httpd.main.server_admin }}"
+ServerAdmin "{{ httpd.server_admin }}"
 
 #
 # ServerName gives the name and port that the server uses to identify itself.
 # If your host doesn't have a registered DNS name, enter its IP address here.
 #
 {% if httpd_ServerName is defined %}
-ServerName "{{ httpd.main.server_name }}"
+ServerName "{{ httpd.server_name }}"
 {% endif %}
 
 #
@@ -46,7 +46,7 @@ ServerName "{{ httpd.main.server_name }}"
     Require all denied
 </Directory>
 
-DocumentRoot "{{ httpd.document_root_base_dir }}/{{ httpd.main.document_root }}"
+DocumentRoot "{{ httpd.document_root_base_dir }}/{{ httpd.document_root }}"
 
 # Relax access to content within document_root_base_dir.
 <Directory "{{ httpd.document_root_base_dir }}">
@@ -55,7 +55,7 @@ DocumentRoot "{{ httpd.document_root_base_dir }}/{{ httpd.main.document_root }}"
 </Directory>
 
 # Further relax access to the default document root:
-<Directory "{{ httpd.document_root_base_dir }}/{{ httpd.main.document_root }}">
+<Directory "{{ httpd.document_root_base_dir }}/{{ httpd.document_root }}">
     Options Indexes FollowSymLinks
     AllowOverride None
     Require all granted
@@ -74,8 +74,8 @@ DocumentRoot "{{ httpd.document_root_base_dir }}/{{ httpd.main.document_root }}"
     Require all denied
 </Files>
 
-ErrorLog "{{ httpd.main.error_log}}"
-LogLevel "{{ httpd.main.log_level}}"
+ErrorLog "{{ httpd.error_log}}"
+LogLevel "{{ httpd.log_level}}"
 
 <IfModule log_config_module>
 
@@ -87,7 +87,7 @@ LogLevel "{{ httpd.main.log_level}}"
       LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
     </IfModule>
 
-    CustomLog "{{ httpd.main.access_log }}" combined
+    CustomLog "{{ httpd.access_log }}" combined
 </IfModule>
 
 <IfModule alias_module>

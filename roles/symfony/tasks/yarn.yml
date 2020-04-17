@@ -1,0 +1,11 @@
+---
+- name: install nodejs
+  dnf:
+    name: nodejs
+    state: present
+
+- name: install yarn
+  npm:
+    name: yarn
+    global: yes
+    state: present
